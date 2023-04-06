@@ -5,15 +5,17 @@ namespace Booking.Models;
 
 public partial class Company
 {
-    public string CompanyId { get; set; } = null!;
+    public byte CompanyId { get; set; }
 
-    public string CompanyName { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-    public string CompanyPhone { get; set; } = null!;
+    public string Phone { get; set; } = null!;
 
-    public string CompanyAccount { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
-    public string Salt { get; set; } = null!;
+    public byte[] Salt { get; set; } = null!;
 
     public byte[] Password { get; set; } = null!;
+
+    public bool? Deleted { get; set; }
 }

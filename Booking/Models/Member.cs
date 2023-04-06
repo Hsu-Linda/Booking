@@ -5,15 +5,15 @@ namespace Booking.Models;
 
 public partial class Member
 {
-    public string MemberId { get; set; } = null!;
+    public short MemberId { get; set; }
 
     public string MemberName { get; set; } = null!;
 
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
-    public string Account { get; set; } = null!;
-
-    public string Salt { get; set; } = null!;
+    public byte[] Salt { get; set; } = null!;
 
     public byte[] Password { get; set; } = null!;
+
+    public bool? Deleted { get; set; }
 }

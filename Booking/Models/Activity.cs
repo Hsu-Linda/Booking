@@ -5,23 +5,29 @@ namespace Booking.Models;
 
 public partial class Activity
 {
-    public string ActivityId { get; set; } = null!;
+    public short Id { get; set; }
 
-    public string ActivityName { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-    public DateTime StartDateTime { get; set; }
-
-    public DateTime EndDateTime { get; set; }
-
-    public string? Photo { get; set; }
+    public byte Company { get; set; }
 
     public string? PhotoUrl { get; set; }
 
-    public string City { get; set; } = null!;
+    public byte City { get; set; }
 
-    public string District { get; set; } = null!;
+    public short District { get; set; }
 
     public string Address { get; set; } = null!;
 
-    public string Company { get; set; } = null!;
+    public DateTime ShowingStart { get; set; }
+
+    public DateTime ShowingEnd { get; set; }
+
+    public DateTime SalesStart { get; set; }
+
+    public DateTime SalesEnd { get; set; }
+
+    public bool Active { get; set; }
+
+    public DateTime LastModified { get; set; }
 }

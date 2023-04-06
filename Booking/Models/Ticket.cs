@@ -5,13 +5,17 @@ namespace Booking.Models;
 
 public partial class Ticket
 {
-    public string TicketId { get; set; } = null!;
+    public int Id { get; set; }
 
-    public string Member { get; set; } = null!;
+    public short Activity { get; set; }
 
-    public string Activity { get; set; } = null!;
+    public int TicketType { get; set; }
 
-    public string OrderTime { get; set; } = null!;
+    public int OrderId { get; set; }
 
-    public int State { get; set; }
+    public int Member { get; set; }
+
+    public byte Status { get; set; }
+
+    public DateTime LastModified { get; set; }
 }
