@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Booking.Dtos;
+using Booking.Exceptions;
+using Booking.Filters;
 using Booking.Models;
+using Booking.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -15,25 +19,23 @@ using System.Security.Claims;
 namespace Booking.Controllers
 {
     [Route("api/[controller]")]
+    [ExceptionHandler]
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly BookingContext _bookingContext;
-        private readonly IMapper _iMapper;
+        private readonly OrderService _orderService;
         private readonly IMemoryCache _iMemoryCache;
 
         public OrderController(
-            BookingContext bookingContext,
-            IMapper iMapper,
+            OrderService orderService,
             IMemoryCache iMemoryCache
             )
         {
-            _bookingContext = bookingContext;
-            _iMapper = iMapper;
+            _orderService = orderService;
             _iMemoryCache = iMemoryCache;
         }
 
-        [HttpGet("{id}"), Authorize(Roles ="member")]
+        [HttpGet("{id}"), Authorize(Roles = "member")]
         public ActionResult<Order> GetOrderDetail(Guid id)
         {
             //var result = _bookingContext.Orders
@@ -49,10 +51,40 @@ namespace Booking.Controllers
             //{
             //    return NotFound("沒有權限");
             //}
-            
-            return  Ok() ;
+
+            return Ok();
         }
 
+        [HttpPost("placeAnOrder"), Authorize(Roles = "member")]
+        public ActionResult PlaceAnOrder(AddOrderRequestDto req)
+        {
+            if (!Byte.TryParse(User.FindFirstValue("memberID"), out byte memberID))
+            {
+                throw new LoseClaimsException();
+            }
+            var result = _orderService.PlaceAnOrder(req, memberID);
+            return Ok(result);
+        }
+
+        [HttpGet("allOrders"), Authorize(Roles = "member")]
+        public ActionResult GetAllOrders()
+        {
+            if (!Byte.TryParse(User.FindFirstValue("memberID"), out byte memberID))
+            {
+                throw new LoseClaimsException();
+            }
+            return Ok(_orderService.GetAllOrders(memberID));
+        }
+
+        [HttpGet("orderInfo/{orderID}"), Authorize(Roles = "member")]
+        public ActionResult GetOrderDetail(int orderID)
+        {
+            if (!Byte.TryParse(User.FindFirstValue("memberID"), out byte memberID))
+            {
+                throw new LoseClaimsException();
+            }
+            return Ok(_orderService.GetOrderDetail(orderID, memberID));
+        }
         //[HttpPost("buyTicketProcess/{activityID}")]
         //public ActionResult<string> BuyTicketProcess(int activityID)
         //{
@@ -170,5 +202,7 @@ namespace Booking.Controllers
         //        }
         //        return BadRequest("尚未付款成功" + isPaymentSuccessful + orderID);
         //    }
+
+
     }
 }

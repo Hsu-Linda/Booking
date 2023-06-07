@@ -41,9 +41,15 @@ builder.Services.AddMvcCore().AddDataAnnotations();
 builder.Services.AddDbContext<BookingContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("BookingDatabase")));
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<OpenSqlService>();
 builder.Services.AddScoped<ActivityService>();
 builder.Services.AddScoped<ActivityRepository>();
+builder.Services.AddScoped<TicketTypeService>();
+builder.Services.AddScoped<TicketTypeRepository>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<TicketService>();
+builder.Services.AddScoped<TicketRepository>();
+
 builder.Services.AddControllers().AddNewtonsoftJson(option =>
     option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 );

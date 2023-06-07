@@ -5,7 +5,7 @@ namespace Booking.Models;
 
 public partial class Company
 {
-    public byte CompanyId { get; set; }
+    public short CompanyId { get; set; }
 
     public string Name { get; set; } = null!;
 

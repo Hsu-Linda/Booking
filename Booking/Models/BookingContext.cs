@@ -33,9 +33,10 @@ public partial class BookingContext : DbContext
 
     public virtual DbSet<TicketType> TicketTypes { get; set; }
 
+    public virtual DbSet<TicketTypeRemainingView> TicketTypeRemainingViews { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Booking;Trusted_Connection=True;TrustServerCertificate=true;");
+    { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,9 +77,7 @@ public partial class BookingContext : DbContext
         {
             entity.ToTable("Company");
 
-            entity.Property(e => e.CompanyId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("CompanyID");
+            entity.Property(e => e.CompanyId).HasColumnName("CompanyID");
             entity.Property(e => e.Email)
                 .HasMaxLength(30)
                 .IsUnicode(false);
@@ -124,6 +123,7 @@ public partial class BookingContext : DbContext
             entity.ToTable("Order");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Items).HasMaxLength(500);
             entity.Property(e => e.Trading).HasColumnType("datetime");
         });
 
@@ -154,6 +154,17 @@ public partial class BookingContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<TicketTypeRemainingView>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("TicketTypeRemainingView");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd()
+                .HasColumnName("ID");
         });
 
         OnModelCreatingPartial(modelBuilder);

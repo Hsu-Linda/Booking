@@ -9,7 +9,7 @@ public partial class Activity
 
     public string Name { get; set; } = null!;
 
-    public byte Company { get; set; }
+    public short Company { get; set; }
 
     public string? PhotoUrl { get; set; }
 

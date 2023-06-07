@@ -9,7 +9,7 @@ public partial class TicketType
 
     public string Name { get; set; } = null!;
 
-    public int Activity { get; set; }
+    public short Activity { get; set; }
 
     public short Price { get; set; }
 

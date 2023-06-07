@@ -26,7 +26,7 @@ namespace Booking.Controllers
         }
 
         [HttpPost("registerMember")]
-        public ActionResult<string> RegisterMember (AddMemberRequestDto registerRequest)
+        public ActionResult<string> RegisterMember(AddMemberRequestDto registerRequest)
         {
             if (_authService.FindMemberAccountExist(registerRequest.Email, out Member? member)
                 ) return BadRequest("email已註冊過帳號");
@@ -38,21 +38,21 @@ namespace Booking.Controllers
         [HttpPost("loginMember")]
         public ActionResult<string> LoginMember(QueryLoginRequestDto loginRequest)
         {
-            if (!_authService.FindMemberAccountExist(loginRequest.Email, out Member? memberFromDB)) 
+            if (!_authService.FindMemberAccountExist(loginRequest.Email, out Member? memberFromDB))
                 return BadRequest("您尚未註冊");
-            
-            if (!_authService.VerifyMemberLogin(loginRequest, memberFromDB)) 
+
+            if (!_authService.VerifyMemberLogin(loginRequest, memberFromDB))
                 return BadRequest("帳號密碼錯誤");
 
-            string token = _authService.CreateToken(member: memberFromDB, role: "member", company:null);
+            string token = _authService.CreateToken(member: memberFromDB, role: "member", company: null);
             return Ok(token);
         }
 
         [HttpPost("registerCompany")]
-        public ActionResult<Company> RegisterCompany (AddCompanyRequestDto companyRequest)
+        public ActionResult<Company> RegisterCompany(AddCompanyRequestDto companyRequest)
         {
             if (_authService.FindCompanyAccountExist(companyRequest.Email, out Company? company)
-                )return BadRequest("email已註冊過帳號");
+                ) return BadRequest("email已註冊過帳號");
 
             _authService.RegisterCompany(companyRequest);
             return Ok("註冊成功");
@@ -62,9 +62,9 @@ namespace Booking.Controllers
         [HttpPost("loginCompany")]
         public ActionResult<string> LoginCompany(QueryLoginRequestDto loginRequest)
         {
-            if(!_authService.FindCompanyAccountExist(loginRequest.Email, out Company? companyFromDB))
+            if (!_authService.FindCompanyAccountExist(loginRequest.Email, out Company? companyFromDB))
                 return BadRequest("您尚未註冊");
-            
+
             if (!_authService.VerifyCompanyLogin(loginRequest, companyFromDB))
                 return BadRequest("帳號密碼錯誤");
 

@@ -7,9 +7,11 @@ public partial class Order
 {
     public int Id { get; set; }
 
-    public int Member { get; set; }
+    public short Member { get; set; }
 
     public DateTime Trading { get; set; }
 
     public byte Status { get; set; }
+
+    public string? Items { get; set; }
 }

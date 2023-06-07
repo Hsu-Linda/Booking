@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Booking.Dtos;
+using Booking.Exceptions;
 using Booking.Models;
+using Booking.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -14,33 +16,24 @@ namespace Booking.Controllers
     [ApiController]
     public class TicketController : ControllerBase
     {
-        private readonly BookingContext _bookingContext;
         private readonly IMapper _iMapper;
-        public TicketController(BookingContext bookingContext, IMapper mapper )
+        private readonly TicketService _ticketService;
+        public TicketController(
+            IMapper mapper,
+            TicketService ticketService)
         {
-            _bookingContext = bookingContext;
             _iMapper = mapper;
+            _ticketService = ticketService;
         }
 
-       // [HttpGet,Authorize]
-       //public ActionResult<IEnumerable<Ticket>> Get() {
-
-       //     int memberId = int.Parse(User.FindFirstValue("memberID"));
-       //     IEnumerable<Ticket> tickets = _bookingContext.Tickets.Where(t => t.MemberId == memberId);
-       //     if (tickets.Any()) 
-       //         return Ok(tickets);
-       //     return NotFound(null);
-       // }
-        
-
-        // GET api/<TickeyController>/5
-        //[HttpGet("{id}")]
-        //public ActionResult<Ticket> Get(Guid id)
-        //{
-        //    var result = _bookingContext.Tickets.Where(t => t.TicketId.Equals(id)).SingleOrDefault();
-        //    if(result==null)
-        //        return NotFound("找不到編號為"+ id + " 的票券");
-        //    return Ok(result);
-        //}
+        [HttpGet("allTickets"), Authorize(Roles = "member")]
+        public ActionResult GetAllTickets()
+        {
+            if (!Byte.TryParse(User.FindFirstValue("memberID"), out byte memberID))
+            {
+                throw new LoseClaimsException();
+            }
+            return Ok(_ticketService.GetByMemberID(memberID));
+        }
     }
 }

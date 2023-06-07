@@ -35,12 +35,12 @@ namespace Booking.Services
             return true;
         }
 
-        public bool FindCompanyAccountExist(string account, out Company? company) 
+        public bool FindCompanyAccountExist(string account, out Company? company)
         {
             company = _bookingContext.Companies
                         .Where(c => c.Email == account)
                         .SingleOrDefault();
-            if (company == null) return false;  
+            if (company == null) return false;
             return true;
         }
 
@@ -59,7 +59,7 @@ namespace Booking.Services
         public void RegisterCompany(AddCompanyRequestDto registerRequest)
         {
             CreatePasswordHash(registerRequest.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            
+
             Company newCompany = _iMapper.Map<Company>(registerRequest);
             newCompany.Salt = passwordSalt;
             newCompany.Password = passwordHash;
@@ -70,7 +70,7 @@ namespace Booking.Services
 
         public bool VerifyMemberLogin(QueryLoginRequestDto loginRequest, Member? memberFromDB)
         {
-            if (loginRequest != null && memberFromDB !=null)
+            if (loginRequest != null && memberFromDB != null)
             {
                 using (var hmac = new HMACSHA512(memberFromDB.Salt))
                 {
@@ -81,9 +81,9 @@ namespace Booking.Services
             return false;
         }
 
-        public bool VerifyCompanyLogin(QueryLoginRequestDto loginRequest, Company? companyFromDB) 
+        public bool VerifyCompanyLogin(QueryLoginRequestDto loginRequest, Company? companyFromDB)
         {
-            if(loginRequest != null && companyFromDB !=null) 
+            if (loginRequest != null && companyFromDB != null)
             {
                 var hmac = new HMACSHA512(companyFromDB.Salt);
                 var loginRequestHashPassword = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(loginRequest.Password));
@@ -95,24 +95,25 @@ namespace Booking.Services
         public string? CreateToken(Member? member, Company? company, string role)
         {
             List<Claim>? claims = null;
-            switch (role) {
-                case null: 
+            switch (role)
+            {
+                case null:
                     return null;
-                
+
                 case "member":
-                    if(member != null) claims = CreateMemberClaims(member);
+                    if (member != null) claims = CreateMemberClaims(member);
                     else { return null; }
                     break;
-                
+
                 case "company":
-                    if(company != null) claims = CreateCompanyClaims(company);
+                    if (company != null) claims = CreateCompanyClaims(company);
                     else { return null; }
                     break;
-                
+
                 default:
                     break;
             }
-            
+
 
             // 建立一組對稱式加密的金鑰，主要用於 JWT 簽章之用
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -142,7 +143,7 @@ namespace Booking.Services
             return claims;
         }
 
-        private List<Claim> CreateCompanyClaims(Company company) 
+        private List<Claim> CreateCompanyClaims(Company company)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -161,5 +162,33 @@ namespace Booking.Services
             //雜湊位元組陣列
             passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
+
+        //public bool GetUserID(int role, out short claimValue)
+        //{
+        //    var claims = ClaimsPrincipal.Current?.Identities.First().Claims.ToList();
+        //    Console.WriteLine("-------------------");
+        //    Console.WriteLine("-------------------");
+        //    Console.WriteLine("-------------------");
+        //    Console.WriteLine(claims);
+        //    Console.WriteLine("-------------------");
+        //    Console.WriteLine("-------------------");
+        //    Console.WriteLine("-------------------");
+        //    string? temp = null;
+        //    switch (role)
+        //    {
+        //        case (int)Enums.role.MEMBER:
+        //            temp = claims?.FirstOrDefault(x => x.Type.Equals("memberID"))?.Value;
+        //            break;
+        //        case (int)Enums.role.COMPANY:
+        //            temp = claims?.FirstOrDefault(x => x.Type.Equals("companyID"))?.Value;
+        //            break;
+        //        default:
+        //            claimValue = 0;
+        //            return false;
+        //    }
+        //    //return Int16.TryParse(temp, out claimValue);
+        //    claimValue = 1;
+        //    return true;
+        //}
     }
 }

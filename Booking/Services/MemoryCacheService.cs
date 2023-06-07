@@ -13,7 +13,7 @@ namespace Booking.Services
             BookingContext bookingContext,
             IMapper iMapper,
             IMemoryCache memoryCache
-        ) 
+        )
         {
             _bookingContext = bookingContext;
             _iMapper = iMapper;
